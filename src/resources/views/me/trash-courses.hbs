@@ -1,0 +1,172 @@
+<div>
+  <a href='/me/stored/courses'>GO BACK TO YOUR COURSES</a>
+  <h1>YOUR COURSE DELETED</h1>
+</div>
+<form method="post" id="formMain" action="/courses/handle-trash-action">
+  <div class="row mt-4">
+  <div class="col-6">
+    <div class="row">
+      <div class="col-3 d-flex align-items-center">
+          <input type="checkbox" class="form-check-input" id="checked-all">
+          <label class="form-check-label" for="checked-all">SELECT ALL</label>
+      </div>
+      <div class="col-6">
+          <select class="form-select" name="action" aria-label="Default select example" required>
+            <option value="" selected>Select your choice</option>
+            <option value="deleteForce">Remove Forever</option>
+            <option value="restore">Restore</option>
+         </select>
+      </div>
+      <div class="col-3">
+          <button type="submit" class="btn btn-primary" disabled id="btnSubmitAll" >SUBMIT</button>
+      </div>
+    </div>
+    </div>
+    <div class="col-8"></div>
+  </div>
+<table class='table mt-4'>
+  <thead>
+    <tr>
+      <th scope='col'></th>
+      <th scope='col'>STT</th>
+      <th scope='col'>NAME</th>
+      <th scope='col'>DESCRIPTION</th>
+      <th scope='col' colspan='2'>DELETED AT</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each courses}}
+      <tr>
+        <td>
+          <input type="checkbox" class="form-check-input" name="courseIds[]" id="checked-items" value="{{this._id}}">
+        </td>
+        <th scope='row'>{{sum @index 1}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.description}}</td>
+        <td>{{this.deletedAt}}</td>
+        <td>
+          <a
+            href=''
+            class='btn btn-link restore-btn'
+            data-id='{{this._id}}'
+          >Restore</a>
+          <a
+            class='btn btn-link'
+            id='deleteForever-btn'
+            data-id='{{this._id}}'
+            data-bs-toggle='modal'
+            data-bs-target='#modal-delele'
+          >Remove Forever</a>
+        </td>
+      </tr>
+    {{else}}
+      <tr>
+        <td class='text-center' colspan='5'>You have never removed some courses
+          here.<a href='/me/stored/courses'>Please enter here to see your
+            courses!!!</a></td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+</form>
+
+{{! form to request to server by method DELETE }}
+<form id='form-delete' method='post'></form>
+<form id='form-restore' method='post'></form>
+
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div
+  class='modal fade'
+  id='modal-delele'
+  tabindex='-1'
+  aria-labelledby='exampleModalLabel'
+  aria-hidden='true'
+>
+  <div class='modal-dialog'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 class='modal-title' id='exampleModalLabel'>DELETE MODAL</h5>
+        <button
+          type='button'
+          class='btn-close'
+          data-bs-dismiss='modal'
+          aria-label='Close'
+        ></button>
+      </div>
+      <div class='modal-body'>
+        DO YOU WANT TO DELETE THIS COURSE FOREVER , RIGHT ?
+      </div>
+      <div class='modal-footer'>
+        <button
+          type='button'
+          class='btn btn-secondary'
+          data-bs-dismiss='modal'
+        >CLOSE</button>
+        <button
+          id='btn-delete-modal'
+          type='button'
+          class='btn btn-primary'
+        >DELETE</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{! script }}
+  {{!-- const btn_delete = document.getElementById('btn-delete-modal'); --}}
+<script>
+  
+  document.addEventListener('DOMContentLoaded',() => { 
+    var idCourse ; 
+    var isChecked ;
+
+    {{!-- validator --}}
+    const checked_all = document.getElementById('checked-all');
+    const checked_items = document.querySelectorAll('#checked-items');
+    const btn_checkAll = document.querySelector('#btnSubmitAll');
+  checked_all.onchange = function() {
+    isChecked = this.checked;
+    isChecked ? btn_checkAll.disabled = false : btn_checkAll.disabled = true;
+    checked_items.forEach(item => {
+        item.checked = isChecked;
+      })
+  }
+  checked_items.forEach(item => {
+    const initialCount = checked_items.length;
+    item.onchange = function() {
+      const is_all = Array.from(checked_items).filter(item => {
+        console.log(item.checked);
+        return item.checked === (isChecked ? isChecked : true);
+      });
+      if(initialCount === is_all.length){
+        checked_all.checked = true;
+        btn_checkAll.disabled = false;
+      }
+      else if(is_all.length > 0) {
+        btn_checkAll.disabled = false;
+        checked_all.checked = false;
+      }
+      else {
+        btn_checkAll.disabled = true;
+      }
+    }
+  })
+
+  const form_delete = document.getElementById('form-delete');
+  const modal_delele = document.getElementById('modal-delele');
+  const btn_delete = document.getElementById('btn-delete-modal'); 
+
+  const form_restore = document.getElementById('form-restore'); 
+  var btn_restore = document.querySelectorAll('.restore-btn'); 
+  btn_restore.forEach((item) => {item.onclick = function(event) { event.preventDefault(); 
+  idCourse = this.getAttribute('data-id'); 
+  form_restore.action =`/courses/${idCourse}/restore?_method=PATCH`; form_restore.submit(); } })
+
+  modal_delele.addEventListener('show.bs.modal', event => { // Button that const
+  const button = event.relatedTarget; // Extract info from idCourse idCourse =
+  idCourse = button.getAttribute('data-id'); 
+  btn_delete.onclick = () => {
+  form_delete.action =`/courses/${idCourse}/force?_method=DELETE`;
+  form_delete.submit(); } })
+  });
+</script>

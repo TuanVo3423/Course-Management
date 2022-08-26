@@ -1,0 +1,58 @@
+{{#with course}}
+  <div class='container mt-4'>
+    <h1>EDIT COURSES PAGE</h1>
+    <form method='post' action='/courses/{{_id}}?_method=PUT'>
+      <div class='mb-3'>
+        <label for='name' class='form-label'>Enter your Name</label>
+        <input
+          type='text'
+          class='form-control'
+          id='name'
+          name='name'
+          value='{{name}}'
+        />
+      </div>
+      <div class='mb-3'>
+        <label for='description' class='form-label'>Description</label>
+        <input
+          type='text'
+          class='form-control'
+          id='description'
+          name='description'
+          value='{{this.description}}'
+        />
+      </div>
+      <div class='mb-3'>
+        <label for='image' class='form-label'>Image</label>
+        <input
+          type='text'
+          class='form-control'
+          id='image'
+          name='image'
+          value='{{image}}'
+        />
+      </div>
+      <div class='mb-3'>
+        <label for='videoId' class='form-label'>VideoID</label>
+        <input
+          type='text'
+          class='form-control'
+          id='videoId'
+          name='videoId'
+          value='{{videoId}}'
+        />
+      </div>
+      <div class='mb-3'>
+        <label for='level' class='form-label'>Level</label>
+        <input
+          type='text'
+          class='form-control'
+          id='level'
+          name='level'
+          value='{{level}}'
+        />
+      </div>
+      <button type='submit' class='btn btn-primary'>SAVE THE UPDATE</button>
+    </form>
+  </div>
+{{/with}}
