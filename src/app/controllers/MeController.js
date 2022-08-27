@@ -3,14 +3,17 @@ const {
   mongooseToObject,
   multipleMongooseToObject,
 } = require('../../utils/mongoose');
+const { restore } = require('./courseController');
 class MeController {
   // [GET] me/stored/courses
   storedCourses(req, res, next) {
+    let courseQuery = Course.find({});
     if(req.query.hasOwnProperty('_sort')){
-      res.json({message: 'successfully'});
-      return;
-    };
-    Promise.all([Course.find({}),Course.countDocumentsDeleted()])
+      courseQuery = courseQuery.sort({
+      [req.query.column] : req.query.type,
+      });
+    }
+    Promise.all([courseQuery,Course.countDocumentsDeleted()])
         .then(([courses , countDeleted]) => {
           res.render('me/stored-courses', {
             countDeleted,

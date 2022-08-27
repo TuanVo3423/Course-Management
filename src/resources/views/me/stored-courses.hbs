@@ -1,5 +1,6 @@
 <div>
-  <h1>YOUR COURSE STORE</h1>
+  <h1>YOUR COURSE STORE {{_sort.type}}</h1>
+  
   <a href='/me/trash/courses'>Recycle Bin ({{countDeleted}})</a>
 </div>
 
@@ -31,12 +32,15 @@
       <th scope='col'>STT</th>
       <th scope='col'>
         NAME
-        <a href="?_sort&column=name&type=acs">
-          <i class="fa-solid fa-elevator"></i>
-        </a>
+        {{{sort 'name' _sort}}}
       </th>
-      <th scope='col'>DESCRIPTION</th>
-      <th scope='col' colspan='2'>CREATED AT</th>
+      <th scope='col'>DESCRIPTION
+      {{{sort 'description' _sort}}}  
+
+      </th>
+      <th scope='col' colspan='2'>CREATED AT
+      {{{sort 'createdAt' _sort}}}  
+      </th>
     </tr>
   </thead>
   <tbody>

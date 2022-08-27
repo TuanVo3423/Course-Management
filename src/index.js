@@ -5,6 +5,7 @@ const handlebars = require('express-handlebars').engine;
 const methodOverride = require('method-override');
 const Routes = require('./routes');
 const db = require('./configs/db');
+const SortMiddleWares = require('./app/middlewares/SortMiddleWare');
 const app = express();
 const port = 3000;
 // connect to db
@@ -20,6 +21,9 @@ app.use(express.json()); // case post data by using js
 
 app.use(methodOverride('_method'));
 
+// add custiom middleWares
+app.use(SortMiddleWares);
+
 // HTTP logger
 app.use(morgan('combined'));
 // template engine
@@ -29,9 +33,26 @@ app.engine(
     extname: '.hbs',
     helpers: {
       sum: (a, b) => a + b,
-      toDate : (dateInDB) => {
-        console.log(dateInDB);
-        return new Date(dateInDB).getDate();
+      sort : (fieldSort , sort) => {
+        // examples : name , description , kh khop 
+        const sortType = fieldSort === sort.column ? sort.type : 'default';
+        const icons = {
+          default: 'fa-solid fa-elevator',
+          desc : 'fa-solid fa-sort-down',
+          asc : 'fa-solid fa-sort-up'
+        }
+        const types = {
+          default : 'desc',
+          desc : 'asc',
+          asc : 'desc',
+        }
+        const icon = icons[sortType];
+        const type = types[sortType];
+        // <a href="?_sort&column=${name}&type=${desc}
+        return `<a href="?_sort&column=${fieldSort}&type=${type}">
+                <i class="${icon}"></i>
+                </a>`
+
 
       }
     },
