@@ -29,7 +29,10 @@
   <thead>
     <tr>
       <th scope='col'></th>
-      <th scope='col'>STT</th>
+      <th class="d-flex" scope='col'>
+        ID
+        {{{sort '_id' _sort}}} 
+      </th>
       <th scope='col'>
         NAME
         {{{sort 'name' _sort}}}
@@ -38,9 +41,10 @@
       {{{sort 'description' _sort}}}  
 
       </th>
-      <th scope='col' colspan='2'>CREATED AT
+      <th scope='col' colspan='1'>CREATED AT
       {{{sort 'createdAt' _sort}}}  
       </th>
+      <th scope='col'></th>
     </tr>
   </thead>
   <tbody>
@@ -49,7 +53,7 @@
         <td>
           <input type="checkbox" class="form-check-input" name="courseIds[]" id="checked-items" value="{{this._id}}">
         </td>
-        <th scope='row'>{{sum @index 1}}</th>
+        <th scope='row'>{{_id}}</th>
         <td>{{this.name}}</td>
         <td>{{this.description}}</td>
         <td>{{this.createdAt}}</td>
